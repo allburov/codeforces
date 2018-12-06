@@ -47,22 +47,15 @@ def dejkstra(distances):
 
     for node in nodes:
         current = node
-        visited = {}
+        # visited = {}
+        visited = answer[node]
         unvisited = {node: None for node in nodes}  # using None as +inf
         candidates_h = []
         current_distance = 0
         unvisited[current] = current_distance
 
-        heapq.heappush(candidates_h, (current_distance, current))
         while True:
-            current_distance, current = heapq.heappop(candidates_h)
-            if current in visited:
-                continue
-
             visited[current] = current_distance
-            answer[node][current] = current_distance
-            answer[current][node] = current_distance
-
             for neighbour in unvisited:
                 distance = distances[current][neighbour]
                 if distance is None: continue
@@ -73,6 +66,10 @@ def dejkstra(distances):
                     unvisited[neighbour] = new_distance
             del unvisited[current]
             if not unvisited: break
+
+            current_distance, current = heapq.heappop(candidates_h)
+            if visited[current] is not None:
+                continue
 
     return answer
 
