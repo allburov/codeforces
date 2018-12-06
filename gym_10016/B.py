@@ -1,3 +1,4 @@
+import heapq
 import time
 
 
@@ -41,30 +42,41 @@ def dump_out(answer, filename="sumdist.out"):
 
 def dejkstra(distances):
     N = len(distances)
+    N2 = N * N
     nodes = [i for i in range(N)]
     answer = [[None for _ in range(N)] for _ in range(N)]
+    answer_count = 0
 
     for node in nodes:
         current = node
         visited = {}
         unvisited = {node: None for node in nodes}  # using None as +inf
+        candidates_h = []
         current_distance = 0
         unvisited[current] = current_distance
+
+        heapq.heappush(candidates_h, (current_distance, current))
         while True:
+            # candidates = [node for node in unvisited.items() if node[1] is not None]
+            # current, current_distance = sorted(candidates, key=lambda x: x[1])[0]
+            current_distance, current = heapq.heappop(candidates_h)
             for neighbour, distance in enumerate(distances[current]):
                 if neighbour in visited:
                     continue
                 if distance is None: continue
                 new_distance = current_distance + distance
                 if unvisited[neighbour] is None or unvisited[neighbour] > new_distance:
+                    try:
+                        candidates_h.remove((neighbour, unvisited[neighbour]))
+                    except:
+                        pass
+                    heapq.heappush(candidates_h, (new_distance, neighbour))
+
                     unvisited[neighbour] = new_distance
             visited[current] = current_distance
             answer[node][current] = current_distance
-            answer[current][node] = current_distance
             del unvisited[current]
             if not unvisited: break
-            candidates = [node for node in unvisited.items() if node[1] is not None]
-            current, current_distance = sorted(candidates, key=lambda x: x[1])[0]
 
     return answer
 
@@ -105,6 +117,8 @@ def main():
     answer = sum_dist(dist)
 
     dump_out(answer)
+
+    # До оптимизации - ~ 20-30 секунд на 400 полносвязном графе
 
 
 if __name__ == "__main__":
