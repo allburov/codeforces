@@ -1,33 +1,15 @@
-from gym_10016.A import floyd
+from gym_10016.B import dejkstra, parse_in, sum_dist
 
 
 def test_floyd():
-    adj_m = [
-        [0, 5, 9, 100],
-        [100, 0, 2, 8],
-        [100, 100, 0, 7],
-        [4, 100, 100, 0]
-    ]
-    answer = floyd(adj_m)
-    expect = [
-        [0, 5, 7, 13],
-        [12, 0, 2, 8],
-        [11, 16, 0, 7],
-        [4, 9, 11, 0],
-    ]
-    assert expect == answer
-
-
-def test_floyd_2():
-    adj_m = [
-        [0, 4, 2],
-        [100, 0, -3],
-        [1, -100, 0],
-    ]
-    answer = floyd(adj_m)
-    expect = [
-        [0, -98, 1],
-        [-2, 0, -3],
-        [0, -100, 0],
-    ]
+    content = """5 5
+1 2
+2 3
+3 4
+5 3
+1 5""".splitlines()
+    adj_m = parse_in(content=content)
+    dist = dejkstra(adj_m)
+    answer = sum_dist(dist)
+    expect = 16
     assert expect == answer

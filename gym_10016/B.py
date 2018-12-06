@@ -1,3 +1,19 @@
+import time
+
+
+def timeit(method):
+    def timed(*args, **kw):
+        ts = time.time()
+        try:
+            result = method(*args, **kw)
+            return result
+        finally:
+            te = time.time()
+            print('%r (%r, %r) %2.2f sec' % (method.__name__, args, kw, te - ts))
+
+    return timed
+
+
 def parse_in(filename="sumdist.in", content=None):
     if content is None:
         with open(filename) as f:
@@ -5,7 +21,7 @@ def parse_in(filename="sumdist.in", content=None):
 
     line_ = content[0].strip('\n ')
     vertex = int(line_.split(' ')[0])
-    INF = 10 ** 9
+    INF = None
     adj_m = [[INF for _ in range(vertex)] for _ in range(vertex)]
     for line in content[1:]:
         line = line.strip('\n ')
@@ -28,7 +44,7 @@ def dejkstra(distances):
     nodes = [i for i in range(N)]
     answer = [[None for _ in range(N)] for _ in range(N)]
 
-    for node in [i for i in range(N // 2)]:
+    for node in nodes:
         current = node
         visited = {}
         unvisited = {node: None for node in nodes}  # using None as +inf
@@ -57,7 +73,7 @@ def ford_bellmana(distances):
     N = len(distances)
     nodes = [i for i in range(N)]
     answer = []
-    INF = 10 ** 9
+    INF = 2
 
     for node in nodes:
         dist = [INF] * N
@@ -73,14 +89,20 @@ def ford_bellmana(distances):
     return answer
 
 
+def sum_dist(distances):
+    answer = 0
+    for i in range(len(distances)):
+        for j in range(len(distances)):
+            if j < i: continue
+            answer += distances[i][j]
+    return answer
+
+
+@timeit
 def main():
     adj_m = parse_in()
-    dist = ford_bellmana(adj_m)
-    answer = 0
-    for i in range(len(adj_m)):
-        for j in range(len(adj_m)):
-            if j < i: continue
-            answer += dist[i][j]
+    dist = dejkstra(adj_m)
+    answer = sum_dist(dist)
 
     dump_out(answer)
 
