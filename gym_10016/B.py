@@ -42,10 +42,8 @@ def dump_out(answer, filename="sumdist.out"):
 
 def dejkstra(distances):
     N = len(distances)
-    N2 = N * N
     nodes = [i for i in range(N)]
     answer = [[None for _ in range(N)] for _ in range(N)]
-    answer_count = 0
 
     for node in nodes:
         current = node
@@ -58,19 +56,18 @@ def dejkstra(distances):
         heapq.heappush(candidates_h, (current_distance, current))
         while True:
             current_distance, current = heapq.heappop(candidates_h)
+            if current in visited:
+                continue
+
             visited[current] = current_distance
             answer[node][current] = current_distance
+            answer[current][node] = current_distance
 
-            for neighbour, distance in enumerate(distances[current]):
-                if neighbour in visited:
-                    continue
+            for neighbour in unvisited:
+                distance = distances[current][neighbour]
                 if distance is None: continue
                 new_distance = current_distance + distance
                 if unvisited[neighbour] is None or unvisited[neighbour] > new_distance:
-                    try:
-                        candidates_h.remove((neighbour, unvisited[neighbour]))
-                    except:
-                        pass
                     heapq.heappush(candidates_h, (new_distance, neighbour))
 
                     unvisited[neighbour] = new_distance
