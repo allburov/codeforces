@@ -1,0 +1,89 @@
+def parse_in(filename="sumdist.in", content=None):
+    if content is None:
+        with open(filename) as f:
+            content = f.readlines()
+
+    line_ = content[0].strip('\n ')
+    vertex = int(line_.split(' ')[0])
+    INF = 10 ** 9
+    adj_m = [[INF for _ in range(vertex)] for _ in range(vertex)]
+    for line in content[1:]:
+        line = line.strip('\n ')
+        start, end = line.split(" ")
+        start = int(start)
+        end = int(end)
+        adj_m[start - 1][end - 1] = 1
+        adj_m[end - 1][start - 1] = 1
+    return adj_m
+
+
+def dump_out(answer, filename="sumdist.out"):
+    str_ = str(answer)
+    with open(filename, 'w') as f:
+        f.write(str_)
+
+
+def dejkstra(distances):
+    N = len(distances)
+    nodes = [i for i in range(N)]
+    answer = [[None for _ in range(N)] for _ in range(N)]
+
+    for node in [i for i in range(N // 2)]:
+        current = node
+        visited = {}
+        unvisited = {node: None for node in nodes}  # using None as +inf
+        current_distance = 0
+        unvisited[current] = current_distance
+        while True:
+            for neighbour, distance in enumerate(distances[current]):
+                if neighbour in visited:
+                    continue
+                if distance is None: continue
+                new_distance = current_distance + distance
+                if unvisited[neighbour] is None or unvisited[neighbour] > new_distance:
+                    unvisited[neighbour] = new_distance
+            visited[current] = current_distance
+            answer[node][current] = current_distance
+            answer[current][node] = current_distance
+            del unvisited[current]
+            if not unvisited: break
+            candidates = [node for node in unvisited.items() if node[1] is not None]
+            current, current_distance = sorted(candidates, key=lambda x: x[1])[0]
+
+    return answer
+
+
+def ford_bellmana(distances):
+    N = len(distances)
+    nodes = [i for i in range(N)]
+    answer = []
+    INF = 10 ** 9
+
+    for node in nodes:
+        dist = [INF] * N
+        dist[node] = 0
+        for k in range(N):
+            for j in range(N):
+                for i in range(N):
+                    # for j, i in W.keys():
+                    if dist[j] + distances[j][i] < dist[i]:
+                        dist[i] = dist[j] + distances[j][i]
+        answer.append(dist)
+
+    return answer
+
+
+def main():
+    adj_m = parse_in()
+    dist = ford_bellmana(adj_m)
+    answer = 0
+    for i in range(len(adj_m)):
+        for j in range(len(adj_m)):
+            if j < i: continue
+            answer += dist[i][j]
+
+    dump_out(answer)
+
+
+if __name__ == "__main__":
+    main()
