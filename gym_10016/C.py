@@ -76,7 +76,10 @@ def answer_func(distances):
         if not vertex_in:
             break
 
-    answer = max_dist[end - 1]
+    if start in Tsort and end - 1 in Tsort:
+        answer = max_dist[end - 1]
+    else:
+        return ":("
     return answer
 
 

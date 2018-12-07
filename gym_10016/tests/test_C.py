@@ -72,3 +72,17 @@ def test_cycle_minus():
     dist = answer_func(adj_m)
     expect = 9
     assert expect == dist
+
+
+def test_bad():
+    content = """5 5 
+1 2 2
+2 3 1
+1 3 1
+1 1 -1
+5 4 10
+""".splitlines()
+    adj_m = parse_in(content=content)
+    dist = answer_func(adj_m)
+    expect = ":("
+    assert expect == dist
