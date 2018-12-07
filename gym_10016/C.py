@@ -42,11 +42,11 @@ def dump_out(answer, filename="maze.out"):
 
 def answer_func(distances):
     N = len(distances)
-    nodes = [i for i in range(N)]
-    answer = 0
 
     Tsort = []  # топологическая сортировка
     vertex_in = {}  # Входящие вершины в каждую вершину
+    vertex_in_Tsort = {}
+    max_dist = {}
     for vertex in range(N):
         vertex_in[vertex] = set((u for u in range(N) if distances[u][vertex] is not None))
 
@@ -54,64 +54,29 @@ def answer_func(distances):
     end = N
 
     while True:
-        v = next((x for x in vertex_in if not vertex_in[x]), None)
-        if v is None:
+        vertex = next((x for x in vertex_in if not vertex_in[x]), None)
+        if vertex is None:
             return ":)"
 
-        if v >= start:
-            Tsort.append(v)
-        if v == end - 1:
+        if vertex >= start:
+            Tsort.append(vertex)
+            max_dist[vertex] = 0
+            vertex_in_Tsort[vertex] = set((u for u in Tsort if distances[u][vertex] is not None))
+            all_distance = [distances[u][vertex] + max_dist[u] for u in vertex_in_Tsort[vertex]]
+            if all_distance:
+                max_dist[vertex] = max(all_distance)
+        if vertex == end - 1:
             break
 
-        v_out_to = [i for i, weight in enumerate(distances[v]) if weight is not None]
+        v_out_to = [i for i, weight in enumerate(distances[vertex]) if weight is not None]
         for j in v_out_to:
-            vertex_in[j].remove(v)
+            vertex_in[j].remove(vertex)
 
-        vertex_in.pop(v)
+        vertex_in.pop(vertex)
         if not vertex_in:
             break
 
-    max_dist = {i: 0 for i in Tsort}
-
-    vertex_in = {}
-    for vertex in Tsort:
-        vertex_in[vertex] = set((u for u in Tsort if distances[u][vertex] is not None))
-
-    for v in Tsort:
-        all_distance = [distances[u][v] + max_dist[u] for u in vertex_in[v]]
-        if all_distance:
-            max_dist[v] = max(all_distance)
-
     answer = max_dist[end - 1]
-    return answer
-
-
-def ford_bellmana(distances):
-    N = len(distances)
-    nodes = [i for i in range(N)]
-    answer = []
-    INF = 2
-
-    for node in nodes:
-        dist = [INF] * N
-        dist[node] = 0
-        for k in range(N):
-            for j in range(N):
-                for i in range(N):
-                    # for j, i in W.keys():
-                    if dist[j] + distances[j][i] < dist[i]:
-                        dist[i] = dist[j] + distances[j][i]
-        answer.append(dist)
-
-    return answer
-
-
-def sum_dist(distances):
-    answer = 0
-    for i in range(len(distances)):
-        for j in range(len(distances)):
-            if j < i: continue
-            answer += distances[i][j]
     return answer
 
 
@@ -121,6 +86,7 @@ def main():
     answer = answer_func(adj_m)
 
     dump_out(answer)
+
 
 if __name__ == "__main__":
     main()
