@@ -118,6 +118,7 @@ def metro(a, b, c):
     return summary / 100
 
 
+assert False, "Грубый перебор, переделать в графы"
 assert metro(0, 500, 500) == 23085.60
 assert metro(1, 1, 0) == 64.00
 assert metro(0, 0, 70) == 1720.00
