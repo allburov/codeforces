@@ -1,7 +1,7 @@
 import os
 
 
-def get_tests(name):
+def get_tests(name, one=False):
     files = os.listdir(name)
     tests_ = []
     ids = []
@@ -20,5 +20,7 @@ def get_tests(name):
 
         tests_.append((in_, out_))
         ids.append(file_name)
+        if one:
+            break
 
     return tests_, ids
