@@ -82,31 +82,47 @@ for i in range(1, len(PRICE)):
     PRICE_INC.append(PRICE[i] - PRICE[i - 1])
 
 
+def price_min(count):
+    for i in range(count, 71):
+        if PRICE[count] > PRICE[i]:
+            count = i
+    return count
+
+
 def metro(a, b, c):
     a_count = a
     b_count = b
-    for i in range(c * 2):
-        if PRICE_INC[a_count + 1] < PRICE_INC[b_count + 1]:
-            a_count += 1
-        else:
-            b_count += 1
+    # Великий перебор
+    MAX_C = 2001
+    if c > 0 and 2 * c < MAX_C:
+        all_answer = [(PRICE[price_min(a_count + i)] + PRICE[price_min(b_count + j)], (i, j))
+                      for i in range(MAX_C) for j
+                      in range(MAX_C) if
+                      i + j == c * 2]
+        all_answer.sort()
+        tmp_sum, (a_count_inc, b_count_inc) = all_answer[0]
+        a_count += a_count_inc
+        b_count += b_count_inc
+
+    else:
+        for i in range(c * 2):
+            if PRICE_INC[a_count + 1] < PRICE_INC[b_count + 1]:
+                a_count += 1
+            else:
+                b_count += 1
 
     # Лишние поездки
-    for i in range(a_count, 71):
-        if PRICE[a_count] > PRICE[i]:
-            a_count = i
-
-    for i in range(b_count, 71):
-        if PRICE[b_count] > PRICE[i]:
-            b_count = i
+    a_count = price_min(a_count)
+    b_count = price_min(b_count)
     summary = PRICE[a_count] + PRICE[b_count]
     return summary / 100
 
 
-assert metro(0, 0, 70) == 172000
+assert metro(0, 500, 500) == 23085.60
 assert metro(1, 1, 0) == 64.00
+assert metro(0, 0, 70) == 1720.00
 assert metro(59, 0, 0) == 860.00
 assert metro(10, 10, 10) == 721.25
 assert metro(0, 0, 30) == 860
 assert metro(1000, 1000, 1000) == 62360.60
-assert metro(58, 58, 3) == 860 + 860
+# assert metro(58, 58, 3) == 860 + 860
