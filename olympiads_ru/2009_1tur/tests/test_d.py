@@ -5,7 +5,7 @@ import pytest
 from d import metro as func
 from tests.common import get_tests
 
-tests_, ids = get_tests('d', one=True)
+tests_, ids = get_tests('d')
 MAX_TIME = 60
 
 
