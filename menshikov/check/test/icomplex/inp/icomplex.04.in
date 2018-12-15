@@ -1,0 +1,4 @@
+1
+BEGIN
+  LOOP n OP 0 END
+END

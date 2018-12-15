@@ -1,0 +1,33 @@
+var
+   n,i:longint;
+   x,y:longint;
+   dx,dy:longint;
+begin
+   assign(output,'border.02');
+   rewrite(output);
+   n:=100000;
+   writeln(n);
+   writeln(-500000000,' ',1000000000);
+   writeln(500000000,' ',1000000000);
+   x:=500000000;
+   y:=1000000000;
+   for i:=1 to (n-4) div 2 do begin
+      dx:=-1000+random(2000);
+      dy:=random(10000);
+      x:=x+dx;
+      y:=x-dy;
+      writeln(x,' ',y);
+   end;
+   writeln(500000000,' ',-1000000000);
+   writeln(-500000000,' ',-1000000000);
+   x:=-500000000;
+   y:=-1000000000;
+   for i:=1 to (n-4) div 2 do begin
+      dx:=-1000+random(2000);
+      dy:=random(10000);
+      x:=x+dx;
+      y:=x+dy;
+      writeln(x,' ',y);
+   end;
+   close(output);
+end.

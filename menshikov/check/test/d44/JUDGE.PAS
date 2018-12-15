@@ -1,0 +1,40 @@
+{
+Written by Fyodor Menshikov 31.05.2002
+7:25-7:48
+}
+{$N+,E-}
+type
+   real=extended;
+const
+   v0=800;
+   m=9.6;
+   g=9.8;
+   dt=0.0001;
+   koef=0.0008137;
+var
+   angle,
+   vx,vy,
+   v,vnew,
+   s,h,a:real;
+begin
+   assign(input,'d44.in');
+   reset(input);
+   readln(angle);
+   angle:=angle/180*pi;
+   vx:=v0*cos(angle);
+   vy:=v0*sin(angle);
+   h:=0;
+   s:=0;
+   while h>=0 do begin
+      h:=h+vy*dt;
+      s:=s+vx*dt;
+      v:=sqrt(sqr(vx)+sqr(vy));
+      vnew:=v-koef*sqr(v)*dt/m;
+      vx:=vx*vnew/v;
+      vy:=vy*vnew/v;
+      vy:=vy-g*dt;
+   end;
+   assign(output,'d44.out');
+   rewrite(output);
+   writeln(s:0:0);
+end.

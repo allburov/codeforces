@@ -1,0 +1,31 @@
+{
+Written by Fyodor Menshikov 24.07.2002
+8:21-8:27
+}
+{$N+,E-}
+type
+   integer=longint;
+   real=extended;
+var
+   n,i:integer;
+   s:real;
+   p1x,p1y,
+   p2x,p2y,
+   p3x,p3y:real;
+begin
+   assign(input,'area.in');
+   reset(input);
+   readln(n);
+   readln(p1x,p1y);
+   readln(p3x,p3y);
+   s:=0;
+   for i:=3 to n do begin
+      p2x:=p3x;
+      p2y:=p3y;
+      readln(p3x,p3y);
+      s:=s+(p3x-p1x)*(p2y-p1y)-(p2x-p1x)*(p3y-p1y);
+   end;
+   assign(output,'area.out');
+   rewrite(output);
+   writeln(abs(s)/2:0:1);
+end.

@@ -1,0 +1,14 @@
+1
+                      BEGIN
+    OP 0       LOOP          n       LOOP 
+  n
+
+OP 88     OP  0   LOOP n LOOP 0 OP 17 END END
+
+
+
+                     END                         END
+
+OP 0                     LOOP n LOOP 3 OP 0 END
+END OP 8
+END

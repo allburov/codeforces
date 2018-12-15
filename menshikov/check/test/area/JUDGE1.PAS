@@ -1,0 +1,34 @@
+{
+Written by Fyodor Menshikov 22.12.2003
+21:34-21:38
+}
+{$N+,E-}
+type
+   integer=longint;
+   real=extended;
+var
+   n,i:integer;
+   x0,y0,x1,y1,x2,y2,s:real;
+begin
+   assign(input,'area.in');
+   reset(input);
+   assign(output,'area.out');
+   rewrite(output);
+   readln(n);
+   readln(x0,y0);
+   x1:=x0;
+   y1:=y0;
+   s:=0;
+   for i:=2 to n do begin
+      x2:=x1;
+      y2:=y1;
+      readln(x1,y1);
+      s:=s+(x1-x2)*(y1+y2);
+   end;
+   x2:=x1;
+   y2:=y1;
+   x1:=x0;
+   y1:=y0;
+   s:=s+(x1-x2)*(y1+y2);
+   writeln(abs(s)/2:0:1);
+end.

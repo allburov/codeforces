@@ -1,0 +1,15 @@
+1 - 9 - Stan wins.
+10 - 18 - Ollie wins.
+19 - 162 - Stan wins.
+163 - 324 - Ollie wins.
+325 - 2916 - Stan wins.
+2917 - 5832 - Ollie wins.
+5833 - 52488 - Stan wins.
+52489 - 104976 - Ollie wins.
+104977 - 944784 - Stan wins.
+944785 - 1889568 - Ollie wins.
+1889569 - 17006112 - Stan wins.
+17006113 - 34012224 - Ollie wins.
+34012225 - 306110016 - Stan wins.
+306110017 - 612220032 - Ollie wins.
+612220033 - 4 294 967 295 - Stan wins.

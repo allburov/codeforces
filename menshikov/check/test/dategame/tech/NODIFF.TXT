@@ -1,0 +1,18 @@
+Сравнение файлов LEAP.TXT и USUAL.TXT
+***** LEAP.TXT
+days in february: 29
+01.01 -> 2
+***** USUAL.TXT
+days in february: 28
+01.01 -> 2
+*****
+
+***** LEAP.TXT
+28.02 -> 1
+29.02 -> 2
+01.03 -> 1
+***** USUAL.TXT
+28.02 -> 1
+01.03 -> 1
+*****
+

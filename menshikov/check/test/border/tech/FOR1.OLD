@@ -1,0 +1,19 @@
+var
+   n,i:longint;
+begin
+   assign(output,'border.01');
+   rewrite(output);
+   n:=100000;
+   writeln(n);
+   writeln(-1000000000,' ',-1000000000);
+   writeln(-1000000000,' ',1000000000);
+   for i:=0 to n div 4-2 do begin
+      writeln(-1000000000+20000+i*80000,' ',1000000000);
+      writeln(-1000000000+20000+i*80000,' ',0);
+      writeln(-1000000000+60000+i*80000,' ',0);
+      writeln(-1000000000+60000+i*80000,' ',1000000000);
+   end;
+   writeln(1000000000,' ',1000000000);
+   writeln(1000000000,' ',-1000000000);
+   close(output);
+end.
