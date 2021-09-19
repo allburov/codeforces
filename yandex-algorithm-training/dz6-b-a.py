@@ -5,8 +5,9 @@ def read_input():
         assert len(nums) == n
         yield nums
         k = int(input_.readline())
-        for _ in range(k):
-            yield list(map(int, input_.readline().split()))
+        queries =  list(map(int, input_.readline().split()))
+        assert len(queries) == k
+        yield queries
 
 
 def middleFind(nums, k, check) -> int:
@@ -37,8 +38,13 @@ if __name__ == "__main__":
     nums.append(float('+inf'))
     nums.sort()
     answers = []
-    for l, r in iterator:
-        lPos = middleFind(nums, l, gte)
-        rPos = middleFind(nums, r, gt)
-        answers.append(rPos - lPos)
-    print(" ".join(map(str, answers)))
+    for num in next(iterator):
+        n = len(nums)
+        lPos = middleFind(nums, num, gte)
+        if lPos in (0, n-1) or nums[lPos] != num:
+            answers.append(f"0 0")
+            continue
+
+        rPos = middleFind(nums, num, gt) - 1
+        answers.append(f"{lPos} {rPos}")
+    print("\n".join(map(str, answers)))
