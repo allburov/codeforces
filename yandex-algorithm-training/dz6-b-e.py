@@ -1,4 +1,5 @@
 import bisect
+from collections import Counter
 
 
 def read_input():
@@ -24,7 +25,7 @@ def coverAll(k, l, nums) -> bool:
     left = k
 
     while left > 0 and start <= n - 1:
-        start = bisect.bisect_left(nums, nums[start] + l + 1, lo=start)
+        start = bisect.bisect_right(nums, nums[start] + l, lo=start)
         left -= 1
     return start > n - 1
 
@@ -37,12 +38,13 @@ assert coverAll(k=2, l=3, nums=[1, 2, 3, 7, 8, 9]) is True
 
 def task(n, k, nums):
     nums.sort()
-    maxLen = max(nums)
+    counter = Counter(nums)
+    maxLen = 2*10**9 + 2
 
     def check(l):
         return coverAll(k, l, nums)
 
-    res = binarySearch(1, maxLen, check=check)
+    res = binarySearch(0, maxLen, check=check)
     return res
 
 
