@@ -1,5 +1,5 @@
 def read_input():
-    with open('input.txt') as input_:
+    with open('../input.txt') as input_:
         url = input_.readline().strip("\n")
         port = int(input_.readline().strip("\n"))
         a = input_.readline().strip("\n")

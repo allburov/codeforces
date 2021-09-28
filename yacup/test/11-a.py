@@ -2,7 +2,7 @@ import string
 
 
 def read_input():
-    with open('input.txt') as input_:
+    with open('../input.txt') as input_:
         string1 = input_.readline().strip("\n")
     return string1,
 
