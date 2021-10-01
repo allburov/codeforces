@@ -3,7 +3,7 @@ from itertools import product
 
 
 def read_input():
-    with open('input.txt') as input_:
+    with open('../input.txt') as input_:
         k = int(input_.readline())
         tiles = []
         for _ in range(k):

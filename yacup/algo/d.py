@@ -1,5 +1,5 @@
 def read_input():
-    with open('input.txt') as input_:
+    with open('../input.txt') as input_:
         n, m = tuple(map(int, input_.readline().split()))
     return n, m
 
