@@ -1,59 +1,91 @@
+from collections import Counter
+
+
 def read_input():
     with open('input.txt') as input_:
-        n = int(input_.readline())
-        delivery_ids = tuple(map(int, input_.readline().split()))
-        parent_ids = tuple(map(int, input_.readline().split()))
         k = int(input_.readline())
-        if k >= 1:
-            not_delivered_yet_ids = tuple(map(int, input_.readline().split()))
-        else:
-            not_delivered_yet_ids = tuple()
+        tiles = []
+        for _ in range(k):
+            first = input_.readline().strip("\n")
+            second = input_.readline().strip("\n")
+            tile_number = convert(first, second)
+            tiles.append(tile_number)
+        n, m = tuple(map(int, input_.readline().split()))
 
-        not_delivered_yet_ids = set(not_delivered_yet_ids)
-    return n, delivery_ids, parent_ids, not_delivered_yet_ids
-
-
-def find(data, i):
-    if i != data[i]:
-        data[i] = find(data, data[i])
-    return data[i]
-
-
-def union(data, i, j):
-    pi, pj = find(data, i), find(data, j)
-    if pi != pj:
-        data[pi] = pj
+        picture = []
+        for _ in range(n // 2):
+            first = input_.readline().strip("\n")
+            second = input_.readline().strip("\n")
+            for j in range(m // 2):
+                tile_number = convert(first[2 * j:2 * j + 2], second[2 * j:2 * j + 2])
+                picture.append(tile_number)
+        return tiles, picture
 
 
-def connected(data, i, j):
-    return find(data, i) == find(data, j)
+YES = "Yes"
+NO = "No"
+
+MAPPER = {
+    # BB
+    # BB
+    ("BB", "BB"): 0,
+    # BB
+    # BW
+    ("BB", "BW"): 1,
+    ("BB", "WB"): 1,
+    ("WB", "BB"): 1,
+    ("BW", "BB"): 1,
+    # BB
+    # WW
+    ("BB", "WW"): 3,
+    ("WB", "WB"): 3,
+    ("WW", "BB"): 3,
+    ("BW", "BW"): 3,
+    # BW
+    # WB
+    ("BW", "WB"): 5,
+    ("WB", "BW"): 5,
+
+    # WW
+    # WB
+    ("WW", "WB"): 7,
+    ("WW", "BW"): 7,
+    ("BW", "WW"): 7,
+    ("WB", "WW"): 7,
+
+    # WW
+    # BW
+    ("WW", "BW"): 7,
+
+    # WW
+    # WW
+    ("WW", "WW"): 15,
+
+    "WBWB": 5,
+    "BWBW": 5,
+    "WWWW": 15,
+}
 
 
-def task(n, delivery_ids, parent_ids, not_delivered_yet_ids):
-    parents = [i for i in range(n)]
-    for i, parent in enumerate(parent_ids):
-        if parent == 0:
-            continue
-        union(parents, i, parent - 1)
+def convert(first, second) -> int:
+    return MAPPER[(first, second)]
 
-    can_send = [True] * n
-    for i, delivery in enumerate(delivery_ids):
-        if delivery in not_delivered_yet_ids:
-            can_send[find(parents, i)] = False
 
-    answers = []
-    for i, send in enumerate(can_send):
-        if send and find(parents, i) == i:
-            answers.append(i+1)
-
-    return answers
+def task(tiles, picture):
+    if len(tiles) < len(picture):
+        return NO
+    tiles_counter = Counter(tiles)
+    picture_counter = Counter(picture)
+    empty_in_picture = picture_counter - tiles_counter
+    if not empty_in_picture:
+        return YES
+    return NO
 
 
 def main():
     args = read_input()
     res = task(*args)
-    print(len(res))
-    print(" ".join(map(str, res)))
+    print(res)
 
 
 if __name__ == "__main__":

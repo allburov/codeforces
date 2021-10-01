@@ -1,4 +1,8 @@
-r0
-r1
-r2
-r3
+2
+BW
+WB
+BW
+WB
+2 2
+WW
+BB

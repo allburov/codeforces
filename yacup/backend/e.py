@@ -5,7 +5,7 @@ FORMAT = "%Y-%m-%d"
 
 
 def read_input():
-    with open('input.txt') as input_:
+    with open('../input.txt') as input_:
         line = input_.readline().strip()
         while line:
             stock, start_end, type = line.split(",")

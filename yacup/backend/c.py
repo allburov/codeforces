@@ -4,7 +4,7 @@ BLACK = 2
 
 
 def read_input():
-    with open("input.txt") as input_:
+    with open("../input.txt") as input_:
         n, m = tuple(map(int, input_.readline().split()))
         square = [[EMPTY] * m for _ in range(n)]
 
