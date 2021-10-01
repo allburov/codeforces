@@ -35,10 +35,10 @@ class MyHTTPHandler(hs.BaseHTTPRequestHandler):
                 print('Variable %s is not known' % var)
                 self.send_error(404)
                 return
-        if requests >= 3:
-            print('Too many requests')
-            self.send_error(404)
-            return
+        # if requests >= 3:
+        #     print('Too many requests')
+        #     self.send_error(404)
+        #     return
         requests += 1
         answer_values = sorted([values[var] for var in variables])
         print('Request: %d' % requests)
