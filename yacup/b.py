@@ -1,4 +1,5 @@
 from collections import Counter
+from itertools import product
 
 
 def read_input():
@@ -25,46 +26,37 @@ def read_input():
 YES = "Yes"
 NO = "No"
 
-MAPPER = {
-    # BB
-    # BB
-    ("BB", "BB"): 0,
-    # BB
-    # BW
-    ("BB", "BW"): 1,
-    ("BB", "WB"): 1,
-    ("WB", "BB"): 1,
-    ("BW", "BB"): 1,
-    # BB
-    # WW
-    ("BB", "WW"): 3,
-    ("WB", "WB"): 3,
-    ("WW", "BB"): 3,
-    ("BW", "BW"): 3,
-    # BW
-    # WB
-    ("BW", "WB"): 5,
-    ("WB", "BW"): 5,
 
-    # WW
-    # WB
-    ("WW", "WB"): 7,
-    ("WW", "BW"): 7,
-    ("BW", "WW"): 7,
-    ("WB", "WW"): 7,
+def get_mapper(letters):
+    mapper = {}
+    next_value = 1
+    variants = ["".join(x) for x in list(product(letters, repeat=2))]
 
-    # WW
-    # BW
-    ("WW", "BW"): 7,
+    def get_value(first, bottom):
+        for i in range(4):
+            if (first, bottom) in mapper:
+                return mapper[(first, bottom)]
+            (first, bottom) = rotate(first, bottom)
+        return None
 
-    # WW
-    # WW
-    ("WW", "WW"): 15,
+    for first_v, bottom_v in product(variants, repeat=2):
+        value = get_value(first=first_v, bottom=bottom_v)
+        if not value:
+            for i in range(4):
+                mapper[(first_v, bottom_v)] = next_value
+                (first_v, bottom_v) = rotate(first_v, bottom_v)
+            next_value += 1
 
-    "WBWB": 5,
-    "BWBW": 5,
-    "WWWW": 15,
-}
+    return mapper
+
+
+def rotate(first, second):
+    new_first = second[0] + first[0]
+    new_second = second[1] + first[1]
+    return new_first, new_second
+
+
+MAPPER = get_mapper("WBR")
 
 
 def convert(first, second) -> int:

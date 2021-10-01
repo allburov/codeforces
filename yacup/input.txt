@@ -1,8 +1,6 @@
-2
-BW
-WB
-BW
-WB
+1
+RW
+RB
 2 2
-WW
-BB
+RB
+RW
