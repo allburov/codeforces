@@ -1,3 +1,6 @@
+from collections import deque
+
+
 def read_input():
     with open("input.txt") as input_:
         n = int(input_.readline())
@@ -56,16 +59,20 @@ class Solver:
             return colored
 
     def recolor(self, node, color, colored):
-        if color != node['color']:
-            if color == GREEN:
-                green_self = node['count'] < node['limit']
-                if not green_self:
-                    return
+        q = deque()
+        q.append(node)
+        while q:
+            node = q.pop()
+            if color != node['color']:
+                if color == GREEN:
+                    green_self = node['count'] < node['limit']
+                    if not green_self:
+                        return
 
-            colored.add(node['id'])
-            node['color'] = color
-            for child in node['children']:
-                self.recolor(child, color, colored)
+                colored.add(node['id'])
+                node['color'] = color
+                for child in node['children']:
+                    q.append(child)
 
 
 def main():
