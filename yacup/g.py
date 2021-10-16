@@ -46,33 +46,33 @@ class Solver:
             return None
 
         if node['color'] == GREEN and not green_self:
-            colored = set()
-            self.recolor(node, RED, colored)
-            return colored
+            return self.recolor(node, RED)
 
         if node['color'] == RED and green_self:
-            if node['parent']['color'] == RED:
+            if node['parent'] and node['parent']['color'] == RED:
                 return None
 
-            colored = set()
-            self.recolor(node, GREEN, colored)
-            return colored
+            return self.recolor(node, GREEN)
 
-    def recolor(self, node, color, colored):
+    def recolor(self, node, color):
         q = deque()
         q.append(node)
+        count = 0
+        answer = 0
         while q:
             node = q.pop()
-            if color != node['color']:
-                if color == GREEN:
-                    green_self = node['count'] < node['limit']
-                    if not green_self:
-                        return
+            if color == GREEN:
+                green_self = node['count'] < node['limit']
+                if not green_self:
+                    continue
 
-                colored.add(node['id'])
-                node['color'] = color
-                for child in node['children']:
+            answer ^= node['id']
+            count += 1
+            node['color'] = color
+            for child in node['children']:
+                if color != child['color']:
                     q.append(child)
+        return count, answer
 
 
 def main():
@@ -85,10 +85,7 @@ def main():
         if not res:
             print("0 0")
         else:
-            ans = 0
-            for num in res:
-                ans ^= num
-            print(f"{len(res)} {ans}")
+            print(f"{res[0]} {res[1]}")
 
 
 if __name__ == "__main__":

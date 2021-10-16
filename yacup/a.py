@@ -79,6 +79,8 @@ def main():
     res = task(*args)
     if not res:
         print(NO_WAY)
+        return
+
     for time in res:
         print(f"{print_time(time[0])}-{print_time(time[1])}")
 
