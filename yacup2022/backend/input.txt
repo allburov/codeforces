@@ -1,13 +1,10 @@
-2
-/project/internal/
-/project/docs/
-5
-/project/docs/internal.md
-/project/lib/header.cpp
-/project/lib/header.h
-/project/bin/main.cpp
-/project/internal/secret.h
-3
-/
-/project/internal/
-/project/lib/
+2 3 9
+DISABLE 1 1
+DISABLE 2 2
+RESET 2
+DISABLE 2 1
+DISABLE 2 3
+RESET 1
+GETMAX
+DISABLE 2 1
+GETMIN

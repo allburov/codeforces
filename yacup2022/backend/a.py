@@ -1,118 +1,41 @@
+import itertools
+import sys
 from collections import defaultdict
+from heapq import heappush, heappop
 from typing import List, Set
 
-try:
-    from collections.abc import MutableMapping
-except ImportError:
-    from collections import MutableMapping
 
 
-def doc(s):
-    if hasattr(s, '__call__'):
-        s = s.__doc__
+class PQ:
+    def __init__(self):
+        self.pq = []  # list of entries arranged in a heap
+        self.entry_finder = {}  # mapping of tasks to entries
+        self.REMOVED = sys.maxsize  # placeholder for a removed task
+        self.counter = itertools.count()
 
-    def f(g):
-        g.__doc__ = s
-        return g
+    def add_task(self, task, priority=0):
+        'Add a new task or update the priority of an existing task'
+        assert task >= 0
+        if task in self.entry_finder:
+            self.remove_task(task)
+        count = next(self.counter)
+        entry = [priority, task, count, task]
+        self.entry_finder[task] = entry
+        heappush(self.pq, entry)
 
-    return f
+    def remove_task(self, task):
+        'Mark an existing task as REMOVED.  Raise KeyError if not found.'
+        entry = self.entry_finder.pop(task)
+        entry[-1] = self.REMOVED
 
-
-class heapdict(MutableMapping):
-    __marker = object()
-
-    def __init__(self, *args, **kw):
-        self.heap = []
-        self.d = {}
-        self.update(*args, **kw)
-
-    @doc(dict.clear)
-    def clear(self):
-        del self.heap[:]
-        self.d.clear()
-
-    @doc(dict.__setitem__)
-    def __setitem__(self, key, value):
-        if key in self.d:
-            self.pop(key)
-        wrapper = [value, key, len(self)]
-        self.d[key] = wrapper
-        self.heap.append(wrapper)
-        self._decrease_key(len(self.heap) - 1)
-
-    def _min_heapify(self, i):
-        n = len(self.heap)
-        h = self.heap
-        while True:
-            # calculate the offset of the left child
-            l = (i << 1) + 1
-            # calculate the offset of the right child
-            r = (i + 1) << 1
-            if l < n and h[l][0] < h[i][0]:
-                low = l
-            else:
-                low = i
-            if r < n and h[r][0] < h[low][0]:
-                low = r
-
-            if low == i:
-                break
-
-            self._swap(i, low)
-            i = low
-
-    def _decrease_key(self, i):
-        while i:
-            # calculate the offset of the parent
-            parent = (i - 1) >> 1
-            if self.heap[parent][0] < self.heap[i][0]:
-                break
-            self._swap(i, parent)
-            i = parent
-
-    def _swap(self, i, j):
-        h = self.heap
-        h[i], h[j] = h[j], h[i]
-        h[i][2] = i
-        h[j][2] = j
-
-    @doc(dict.__delitem__)
-    def __delitem__(self, key):
-        wrapper = self.d[key]
-        while wrapper[2]:
-            # calculate the offset of the parent
-            parentpos = (wrapper[2] - 1) >> 1
-            parent = self.heap[parentpos]
-            self._swap(wrapper[2], parent[2])
-        self.popitem()
-
-    @doc(dict.__getitem__)
-    def __getitem__(self, key):
-        return self.d[key][0]
-
-    @doc(dict.__iter__)
-    def __iter__(self):
-        return iter(self.d)
-
-    def popitem(self):
-        """D.popitem() -> (k, v), remove and return the (key, value) pair with lowest\nvalue; but raise KeyError if D is empty."""
-        wrapper = self.heap[0]
-        if len(self.heap) == 1:
-            self.heap.pop()
-        else:
-            self.heap[0] = self.heap.pop()
-            self.heap[0][2] = 0
-            self._min_heapify(0)
-        del self.d[wrapper[1]]
-        return wrapper[1], wrapper[0]
-
-    @doc(dict.__len__)
-    def __len__(self):
-        return len(self.d)
-
-    def peekitem(self):
-        """D.peekitem() -> (k, v), return the (key, value) pair with lowest value;\n but raise KeyError if D is empty."""
-        return (self.heap[0][1], self.heap[0][0])
+    def pop_task(self):
+        'Remove and return the lowest priority task. Raise KeyError if empty.'
+        while self.pq:
+            priority, task, count, flag = heappop(self.pq)
+            if flag != self.REMOVED:
+                del self.entry_finder[task]
+                return task, priority
+        raise KeyError('pop from an empty priority queue')
 
 
 def read_input():
@@ -134,17 +57,17 @@ class Solver:
         self.datacenters: List[Set] = [set() for _ in range(n)]
         self.resets = defaultdict(int)
 
-        self.heapmin = heapdict()
-        self.heapmax = heapdict()
-        for i in range(n - 1, -1, -1):
+        self.heapmax = PQ()
+        self.heapmin = PQ()
+        for i in range(n):
             self._set(i)
 
     def _set(self, datacenter):
         R = self.resets[datacenter]
         A = self.m - len(self.datacenters[datacenter])
         value = R * A
-        self.heapmin[datacenter] = value
-        self.heapmax[datacenter] = -value
+        self.heapmax.add_task(task=datacenter, priority=-value)
+        self.heapmin.add_task(task=datacenter, priority=value)
 
     def process(self, event_data):
         parts = event_data.split(" ")
@@ -171,29 +94,14 @@ class Solver:
         self._set(datacenter)
 
     def getmax(self):
-        datacenter = get(self.heapmax)
+        datacenter, priority = self.heapmax.pop_task()
         print(datacenter + 1)
-        return datacenter + 1
+        self.heapmax.add_task(task=datacenter, priority=priority)
 
     def getmin(self):
-        datacenter = get(self.heapmin)
+        datacenter, priority = self.heapmin.pop_task()
         print(datacenter + 1)
-        return datacenter + 1
-
-
-def get(heap: heapdict):
-    pairs = []
-    key, value = heap.popitem()
-    pairs.append((key, value))
-    while heap and value == heap.peekitem()[1]:
-        pairs.append(heap.popitem())
-
-    result = min(pair[0] for pair in pairs)
-    # Push them back
-    for key, value in pairs:
-        heap[key] = value
-
-    return result
+        self.heapmin.add_task(task=datacenter, priority=priority)
 
 
 def main():
