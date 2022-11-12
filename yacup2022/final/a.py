@@ -6,6 +6,8 @@ from collections import defaultdict
 from heapq import heappush, heappop
 from typing import List, Set, Any, Dict
 
+sys.setrecursionlimit(1000000)
+
 
 def read_input():
     with open('./input.txt') as input_:
